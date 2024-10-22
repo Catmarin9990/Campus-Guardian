@@ -15,7 +15,8 @@ public class GameController : MonoBehaviour
     [Header("Document Settings")]
     [SerializeField] private GameObject docPrefab;
     [SerializeField] private List<Transform> DocSpawnpoints;
-    private DocumentScript doc;
+	[SerializeField] private List<Transform> DocEndpoints;
+	private DocumentScript doc;
     
 
     private (byte, byte) time;
@@ -58,8 +59,11 @@ public class GameController : MonoBehaviour
 
     public void docSpawn()
     {
-        doc = Instantiate(docPrefab, DocSpawnpoints[Random.Range(0, DocSpawnpoints.Count)]).GetComponent<DocumentScript>();
+        int index = Random.Range(0, DocSpawnpoints.Count);
+
+        doc = Instantiate(docPrefab, DocSpawnpoints[index]).GetComponent<DocumentScript>();
         (doc.studName, doc.studSurname, doc.course) =
         (students[studIndex].studName, students[studIndex].studSurname, students[studIndex].course);
+        doc.endPoint = DocEndpoints[index];
     }
 }

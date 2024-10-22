@@ -101,7 +101,7 @@ public class DataRandomGenerator : MonoBehaviour
 		else
 			name = armBoyNames[Random.Range(0, engBoyNames.Length)];
 		surname = armSurnames[Random.Range(0, engSurnames.Length)];
-		if (Random.Range(0f, 100f) <= 1)
+		if (Random.Range(0f, 100f) <= 1) 
 			name = "Gerasim";
 		if (Random.Range(0f, 100f) < zeroCourseChance)
 			counter = 0;
