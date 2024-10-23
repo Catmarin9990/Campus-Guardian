@@ -8,8 +8,10 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject StudPrefab;
     [SerializeField] private Transform StudSpawnpoint;
     [SerializeField] private DataRandomGenerator dataGen;
-    private StudentScript currentStudnet;
-    private List<StudentClass> students;
+    public StudentScript currentStudnet;
+	public StudentScript CurrentStudnet => currentStudnet;
+	private List<StudentClass> students;
+    public List<StudentClass> Students => students;
     private byte studIndex = 0;
 
     [Header("Document Settings")]
@@ -25,6 +27,7 @@ public class GameController : MonoBehaviour
 	{
         students = new List<StudentClass>();
 		dataGen.generateData(students, StudCount);
+        students.Sort((s1, s2) => s1.course.CompareTo(s2.course));
 	}
 	private void Start()
 	{
