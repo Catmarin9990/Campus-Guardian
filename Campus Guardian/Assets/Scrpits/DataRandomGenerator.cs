@@ -52,7 +52,7 @@ public class DataRandomGenerator : MonoBehaviour
 	};
 
 	[SerializeField] private float foreignerChance = 15;
-	[SerializeField] private float zeroCourseChance = 12;
+	[SerializeField] private float zeroCourseChance = 8;
 
 	public void generateData(List<StudentClass> students, byte size)
 	{
@@ -61,7 +61,7 @@ public class DataRandomGenerator : MonoBehaviour
 		byte counter = 1;
 		for (int i = 0; i < size; i++)
 		{
-			if (counter == 4) counter = 1;
+			if (counter > 4) counter = 1;
 			isGirl = Random.Range(0, 2) == 1;
 			isForeigner = Random.Range(0f, 100f) < foreignerChance;
 			if (isForeigner)
@@ -70,6 +70,28 @@ public class DataRandomGenerator : MonoBehaviour
 				students.Add(armGen(isGirl, counter));
 			counter++;
 		}
+	}
+
+	public StudentClass generateData()
+	{
+		bool isGirl;
+		bool isForeigner;
+		byte course = (byte)Random.Range(1, 4);
+		StudentClass stud;
+
+		isGirl = Random.Range(0, 2) == 1;
+		isForeigner = Random.Range(0f, 100f) < foreignerChance;
+
+		float defaultChance = zeroCourseChance;
+		zeroCourseChance = 0;
+
+		if (isForeigner)
+			stud = foreignGen(isGirl, course);
+		else
+			stud = armGen(isGirl, course);
+
+		zeroCourseChance = defaultChance;
+		return stud;
 	}
 
 	private StudentClass foreignGen(bool isGirl, byte counter)
@@ -90,6 +112,7 @@ public class DataRandomGenerator : MonoBehaviour
 		stud = new StudentClass(name, surname, counter, isGirl);
 		return stud;
 	}
+
 	private StudentClass armGen(bool isGirl, byte counter)
 	{
 		string name;
