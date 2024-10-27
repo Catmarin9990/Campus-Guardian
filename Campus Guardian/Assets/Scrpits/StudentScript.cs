@@ -15,7 +15,7 @@ public class StudentScript : MonoBehaviour
 	[SerializeField] private Transform start;
 	[SerializeField] private Transform inPoint;
 	[SerializeField] private Transform backPoint;
-	private float speed = 5f;
+	private float speed = 8f;
 	private bool fadeIn = false;
 	public bool fadeOut { get; set; }
 	public bool goBack { get; set; }
@@ -30,7 +30,6 @@ public class StudentScript : MonoBehaviour
 	}
 	private void Start()
 	{
-
 		fadeIn = true;
 	}
 
@@ -51,8 +50,11 @@ public class StudentScript : MonoBehaviour
 			if(Vector2.Distance(transform.position, inPoint.position) == 0)
 			{
 				fadeOut = false;
+				isGetDoc = false;
 				gameController.StudentLeft();
-			}
+				transform.position = backPoint.position;
+				fadeIn = true;
+			}	
 		}
 		else if (goBack && isGetDoc)
         {
@@ -60,7 +62,10 @@ public class StudentScript : MonoBehaviour
 			if (Vector2.Distance(transform.position, backPoint.position) == 0)
 			{
 				goBack = false;
+				isGetDoc = false;
 				gameController.StudentLeft();
+				transform.position = backPoint.position;
+				fadeIn = true;
 			}
 		}
     }
