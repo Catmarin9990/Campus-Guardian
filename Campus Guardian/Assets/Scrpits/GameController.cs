@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
     [Header("Studnet Settings")]
     [SerializeField] private byte StudCount;
-    [SerializeField] GameObject StudPrefab;
+	private byte studLeft;
+	private byte allStudCount = 40;
+	[SerializeField] GameObject StudPrefab;
     [SerializeField] private Transform StudSpawnpoint;
     [SerializeField] private DataRandomGenerator dataGen;
     private StudentScript currentStudnet;
@@ -23,22 +24,25 @@ public class GameController : MonoBehaviour
 
 	[Space]
 	[Header("Chance Settings")]
-	[SerializeField] private float forgotChance = 15f;
-	[SerializeField] private float wrongChance = 8f;
+	private float forgotChance = 10f;
+	private float wrongChance = 8f;
     private bool isForgot = false;
     private bool isWrong = false;
 
 	private (byte, byte) time;
+	[SerializeField] private TextSpawnScript console;
 
 	private void Awake()
 	{
         students = new List<StudentClass>();
-		dataGen.generateData(students, StudCount);
+		dataGen.generateData(students, allStudCount);
         students.Sort((s1, s2) => s1.course.CompareTo(s2.course));
+		studIndex = (byte)Random.Range(0, allStudCount);
 	}
 	private void Start()
 	{
-        time = (9, 30);
+		studLeft = allStudCount;
+		time = (9, 30);
         spawnStud();
 	}
 
@@ -59,9 +63,11 @@ public class GameController : MonoBehaviour
 	}
 
 	public void StudentLeft()
-    { 
-		studIndex++;
-		Destroy(currentStudnet.transform.GetChild(0));
+    {
+		studLeft--;
+		Students.RemoveAt(studIndex);
+		studIndex = (byte)Random.Range(0, studLeft);
+		Destroy(currentStudnet.transform.GetChild(0).gameObject);
 		currentStudnet = null;
 		spawnStud();
 	}
@@ -69,18 +75,18 @@ public class GameController : MonoBehaviour
 	public void docSpawn()
     {
         int index = Random.Range(0, DocSpawnpoints.Count);
+
+		(currentStudnet.studName, currentStudnet.studSurname, currentStudnet.course) =
+		(students[studIndex].studName, students[studIndex].studSurname, students[studIndex].course);
+
 		if (forgotChance < Random.Range(0f, 100f))
         {
 			doc = Instantiate(docPrefab, DocSpawnpoints[index]).GetComponent<DocumentScript>();
-            isForgot = true;
 			(doc.studName, doc.studSurname, doc.course) =
             (students[studIndex].studName, students[studIndex].studSurname, students[studIndex].course);
 		}
 		else
-		{
-			(currentStudnet.studName, currentStudnet.studSurname, currentStudnet.course) =
-			(students[studIndex].studName, students[studIndex].studSurname, students[studIndex].course);
-		}
+			isForgot = true;
 
 		if (wrongChance > Random.Range(0f, 100f))
 		{
@@ -97,7 +103,7 @@ public class GameController : MonoBehaviour
 			}
             isWrong = true;
 		}
-        if(isForgot)
+        if(!isForgot)
 		    doc.endPoint = DocEndpoints[index];
     }
 
