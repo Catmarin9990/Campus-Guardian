@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DragController : MonoBehaviour
@@ -82,6 +84,16 @@ public class DragController : MonoBehaviour
 	}
 	private void Drop()
 	{
+		List<RaycastHit2D> hits = Physics2D.RaycastAll(worldPosition, Vector2.zero).ToList();
+
+		hits.ForEach(hit => {
+			if (hit.transform.gameObject.name == gameController.CurrentStudnet.name)
+			{
+				gameController.CurrentStudnet.isGetDoc = true;
+				Destroy(lastDragged.gameObject);
+			}
+		});
+
 		UpdateDragStatus(false);
 	}
 	private void UpdateDragStatus(bool isDragging)
